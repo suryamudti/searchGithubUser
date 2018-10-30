@@ -1,7 +1,6 @@
 package com.smile.searchgithubuser.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by hendrigunawan on 5/28/17.
+ * Created by suryamudti on 29/10/18.
  */
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {

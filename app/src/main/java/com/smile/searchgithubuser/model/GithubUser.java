@@ -4,6 +4,10 @@ import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Created by suryamudti on 29/10/18.
+ */
+
 public class GithubUser implements Serializable
 {
 

@@ -5,8 +5,11 @@ import com.smile.searchgithubuser.model.Users;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
+
+/**
+ * Created by suryamudti on 29/10/18.
+ */
 
 public interface UserApi {
 

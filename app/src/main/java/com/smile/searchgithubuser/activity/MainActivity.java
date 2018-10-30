@@ -30,6 +30,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Created by suryamudti on 29/10/18.
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     private SearchView searchView;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // init progressbar
         progressBar = (ProgressBar) findViewById(R.id.progress);
+        progressBar.setVisibility(View.INVISIBLE);
 
         // init list and list adapter
         list = new ArrayList<>();
@@ -65,29 +70,32 @@ public class MainActivity extends AppCompatActivity {
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setQueryHint("Search Github Users");
 
-        // set the event
+        // set the searchview event
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                loadUsers(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                loadUsers(newText);
+
                 return false;
             }
         });
     }
 
     /**
-     * this will load every user type in searchview
-     * @param username
+     * this will load every user submit text in searchview
+     * @param username is text contain user github name
      */
     private void loadUsers(final String username){
+        // show progress bar
         progressBar.setVisibility(View.VISIBLE);
+
+        // init the http client with retrofit
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -103,45 +111,52 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        // define the Api Service
         UserApi service = retrofit.create(UserApi.class);
-
         Call<Users> call = service.getUsers(username);
+
+        // do call the service API
         call.enqueue(new Callback<Users>() {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
+
+                // check if request is successfull
                 if (response.raw().isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
 
+                    // clear the current list
                     list.clear();
+
+                    // add all response body to the list
                     list.addAll(response.body().getGithubUsers());
 
                     Log.e("surya", "list count "+list.size());
 
+                    // set the current list data to list adapter
                     listAdapter.notifyDataSetChanged();
+
+
                     if (list.size()>0){
                         for (GithubUser g : list){
-                            Log.e("surya", "nama "+g.getLogin());
+                            // print github id to logcat if list exist
+                            Log.e("surya", "message "+g.getLogin());
                         }
                     }else {
-                        Toast.makeText(getApplicationContext(),"There is no account name "+username,Toast.LENGTH_SHORT).show();
+                        // showing toast if there is no result
+                        Toast.makeText(getApplicationContext(),"There is no result called name "+username,Toast.LENGTH_SHORT).show();
                     }
-                    Log.e("surya", "message "+response.message());
-
                 }else{
+                    // print this message if the request is not successfull
                     Log.e("surya", "somthing wrong");
                 }
             }
 
             @Override
             public void onFailure(Call<Users> call, Throwable t) {
-                Log.e("surya", "Network Failure");
+                // show this toast if the device not have internet connection
+                Toast.makeText(getApplicationContext(),"Please check your network connection !",Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
-
-
-
 
 }
